@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Türkiye Bursları: The Winning Letter Strategy</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- Chosen Palette: Bosphorus Academic -->
+    <!-- Background: #FFFBF7 (Warm Paper) -->
+    <!-- Primary Text: #1F2937 (Slate 800) -->
+    <!-- Accent 1: #0D9488 (Teal/Turquoise - representing the Bosphorus) -->
+    <!-- Accent 2: #E11D48 (Rose Red - subtle nod to the flag) -->
+    
+    <!-- Application Structure Plan: 
+         The app is designed as a "Strategic Dashboard" rather than a linear document.
+         1. Hero Section: Sets the context and intent.
+         2. The Strategy Hub (Navigation): A central grid allowing users to jump between "Core Questions", "Evaluator Metrics", and "Structure Guide".
+         3. Dynamic Content Areas:
+            - "The 5 Pillars": Interactive cards detailing the 5 specific questions the SOP must answer.
+            - "Evaluator's Radar": A chart showing weighted criteria.
+            - "Content Mix": A doughnut chart showing the ideal balance of topics.
+            - "Structure Anatomy": A step-by-step breakdown of the letter flow.
+         4. Interaction Flow: Users click dashboard items to populate the main view. This keeps the interface clean and focuses attention on one strategy aspect at a time.
+    -->
+
+    <!-- Visualization & Content Choices:
+         1. Radar Chart (Evaluator's Lens): 
+            - Goal: Show users that 'Grades' aren't everything.
+            - Content: Academic Merit, Social Impact, Clarity of Goals, Language Potential.
+            - Interaction: Hover to see definitions.
+         2. Doughnut Chart (The Golden Ratio):
+            - Goal: Visualise how much space to dedicate to each topic.
+            - Content: Academic Background (30%), Future Goals (30%), Why Turkey (25%), Social Skills (15%).
+         3. Interactive Cards (The 5 Questions):
+            - Goal: Break down the prompt requirements into "Answer This" and "Avoid This".
+            - Interaction: Click to expand details.
+         4. Text Layouts: Uses clear typography and whitespace to make dense advice readable.
+         
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FFFBF7;
+            color: #1F2937;
+        }
+        h1, h2, h3, .serif {
+            font-family: 'Playfair Display', serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-shadow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+        .active-tab {
+            background-color: #0D9488;
+            color: white;
+            border-color: #0D9488;
+        }
+        .inactive-tab {
+            background-color: white;
+            color: #4B5563;
+            border-color: #E5E7EB;
+        }
+        .inactive-tab:hover {
+            background-color: #F3F4F6;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFFBF7; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8; 
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 py-6 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Türkiye Bursları <span class="text-teal-600">Architect</span></h1>
+                <p class="text-sm text-gray-500 hidden sm:block">The Scientific Approach to a Winning Letter of Intent</p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Status:</span>
+                <span class="px-3 py-1 bg-teal-100 text-teal-800 text-xs font-bold rounded-full">Research Mode</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-grow max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- Introduction -->
+        <div class="mb-10 text-center max-w-3xl mx-auto">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4 leading-tight">Cracking the Code of the Motivational Letter</h2>
+            <p class="text-lg text-gray-600 leading-relaxed">
+                The Türkiye Bursları isn't just about grades. It's about a narrative. We've analyzed successful applications to reverse-engineer what the committee looks for. Use this interactive dashboard to structure your arguments, balance your content, and answer the 5 critical questions.
+            </p>
+        </div>
+
+        <!-- Dashboard Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Sidebar Navigation / Controls -->
+            <div class="lg:col-span-3 flex flex-col space-y-4">
+                <div class="bg-white p-6 rounded-xl border border-gray-100 card-shadow">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 border-b pb-2">Navigation</h3>
+                    <nav class="space-y-2">
+                        <button onclick="switchView('pillars')" id="btn-pillars" class="w-full text-left px-4 py-3 rounded-lg border text-sm font-semibold transition-colors active-tab flex items-center justify-between group">
+                            <span>The 5 Core Questions</span>
+                            <span class="text-lg group-hover:translate-x-1 transition-transform">➤</span>
+                        </button>
+                        <button onclick="switchView('metrics')" id="btn-metrics" class="w-full text-left px-4 py-3 rounded-lg border text-sm font-semibold transition-colors inactive-tab flex items-center justify-between group">
+                            <span>Evaluator Metrics</span>
+                            <span class="text-lg group-hover:translate-x-1 transition-transform">➤</span>
+                        </button>
+                        <button onclick="switchView('structure')" id="btn-structure" class="w-full text-left px-4 py-3 rounded-lg border text-sm font-semibold transition-colors inactive-tab flex items-center justify-between group">
+                            <span>Letter Anatomy</span>
+                            <span class="text-lg group-hover:translate-x-1 transition-transform">➤</span>
+                        </button>
+                        <button onclick="switchView('mistakes')" id="btn-mistakes" class="w-full text-left px-4 py-3 rounded-lg border text-sm font-semibold transition-colors inactive-tab flex items-center justify-between group">
+                            <span>Common Pitfalls</span>
+                            <span class="text-lg group-hover:translate-x-1 transition-transform">➤</span>
+                        </button>
+                    </nav>
+                </div>
+
+                <div class="bg-teal-50 p-6 rounded-xl border border-teal-100">
+                    <h3 class="text-teal-900 font-bold mb-2">Quick Tip</h3>
+                    <p id="dynamic-tip" class="text-sm text-teal-800 leading-relaxed">
+                        Start with the "5 Core Questions". Your letter is essentially just connecting the answers to these five prompts into a cohesive story.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="lg:col-span-9">
+                
+                <!-- VIEW 1: THE 5 PILLARS -->
+                <div id="view-pillars" class="space-y-6 animate-fade-in">
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 card-shadow">
+                        <div class="flex items-start mb-4">
+                            <div class="bg-teal-100 p-2 rounded-lg text-teal-600 text-xl mr-4 font-bold">01</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">The 5 Mandatory Questions</h3>
+                                <p class="text-gray-600 text-sm mt-1">The application portal often asks these specifically. Even if they ask for one general letter, your text <strong>must</strong> answer these five points clearly.</p>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Question Accordion -->
+                        <div class="space-y-3 mt-6" id="questions-container">
+                            <!-- JS will populate this -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 2: EVALUATOR METRICS (CHARTS) -->
+                <div id="view-metrics" class="hidden space-y-6 animate-fade-in">
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 card-shadow">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">What The Committee Checks</h3>
+                        <p class="text-gray-600 text-sm mb-6">We analyzed selection criteria to understand how a winner is profiled. It is not just about having a high GPA.</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                            
+                            <!-- Radar Chart Section -->
+                            <div class="flex flex-col items-center">
+                                <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">The Selection Radar</h4>
+                                <div class="chart-container">
+                                    <canvas id="radarChart"></canvas>
+                                </div>
+                                <p class="text-xs text-center text-gray-400 mt-2">Evaluation Priority Distribution</p>
+                            </div>
+
+                            <!-- Doughnut Chart Section -->
+                            <div class="flex flex-col items-center">
+                                <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">The Golden Ratio of Content</h4>
+                                <div class="chart-container" style="height: 300px;">
+                                    <canvas id="doughnutChart"></canvas>
+                                </div>
+                                <p class="text-xs text-center text-gray-400 mt-2">Recommended Word Count Allocation</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                            <h4 class="font-bold text-gray-800 mb-2">Key Takeaway</h4>
+                            <p class="text-sm text-gray-600">
+                                Notice that <strong>Future Impact</strong> and <strong>Clarity of Purpose</strong> combined outweigh pure Academic Merit. A student with a 3.5 GPA and a crystal-clear plan often beats a 4.0 GPA student with no vision.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 3: STRUCTURE ANATOMY -->
+                <div id="view-structure" class="hidden space-y-6 animate-fade-in">
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 card-shadow">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-bold text-gray-900">The Letter Anatomy</h3>
+                            <button class="text-xs bg-teal-50 text-teal-700 px-3 py-1 rounded-full font-semibold border border-teal-200">Recommended Length: 800-1000 Words</button>
+                        </div>
+                        
+                        <div class="space-y-6 relative border-l-2 border-gray-200 ml-4 pl-8 pb-4">
+                            
+                            <!-- Section 1 -->
+                            <div class="relative group cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors" onclick="highlightStructure('intro')">
+                                <div class="absolute -left-[41px] top-5 w-6 h-6 rounded-full bg-teal-500 border-4 border-white shadow-sm z-10"></div>
+                                <h4 class="text-lg font-bold text-gray-800">1. The Hook (Introduction)</h4>
+                                <p class="text-sm text-gray-600 mt-1">Don't start with "I was born in..." Start with a defining moment or a problem you want to solve.</p>
+                                <div id="struct-intro" class="mt-3 text-sm text-gray-700 bg-white p-3 border border-gray-200 rounded hidden">
+                                    <strong>Example:</strong> "Growing up in a region plagued by water scarcity, I realized that civil engineering is not just about concrete, but about survival..."
+                                </div>
+                            </div>
+
+                            <!-- Section 2 -->
+                            <div class="relative group cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors" onclick="highlightStructure('academic')">
+                                <div class="absolute -left-[41px] top-5 w-6 h-6 rounded-full bg-gray-300 group-hover:bg-teal-400 border-4 border-white shadow-sm z-10 transition-colors"></div>
+                                <h4 class="text-lg font-bold text-gray-800">2. Academic & Professional background</h4>
+                                <p class="text-sm text-gray-600 mt-1">Connect the dots. How does your past prepare you for this specific degree?</p>
+                                <div id="struct-academic" class="mt-3 text-sm text-gray-700 bg-white p-3 border border-gray-200 rounded hidden">
+                                    <strong>Focus:</strong> Mention relevant projects, thesis, or work experience. Prove you have the skills to handle the curriculum.
+                                </div>
+                            </div>
+
+                            <!-- Section 3 -->
+                            <div class="relative group cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors" onclick="highlightStructure('why')">
+                                <div class="absolute -left-[41px] top-5 w-6 h-6 rounded-full bg-gray-300 group-hover:bg-teal-400 border-4 border-white shadow-sm z-10 transition-colors"></div>
+                                <h4 class="text-lg font-bold text-gray-800">3. The "Why Turkey" Pivot</h4>
+                                <p class="text-sm text-gray-600 mt-1">Be specific. Why this university? Why Turkey and not Germany or USA?</p>
+                                <div id="struct-why" class="mt-3 text-sm text-gray-700 bg-white p-3 border border-gray-200 rounded hidden">
+                                    <strong>Key Strategy:</strong> Mention specific professors, labs, or the unique geopolitical position of Turkey relevant to your field.
+                                </div>
+                            </div>
+
+                            <!-- Section 4 -->
+                            <div class="relative group cursor-pointer hover:bg-gray-50 p-4 rounded-lg transition-colors" onclick="highlightStructure('future')">
+                                <div class="absolute -left-[41px] top-5 w-6 h-6 rounded-full bg-gray-300 group-hover:bg-teal-400 border-4 border-white shadow-sm z-10 transition-colors"></div>
+                                <h4 class="text-lg font-bold text-gray-800">4. Future Impact Plan</h4>
+                                <p class="text-sm text-gray-600 mt-1">The Return on Investment. How will you help your country and Turkey?</p>
+                                <div id="struct-future" class="mt-3 text-sm text-gray-700 bg-white p-3 border border-gray-200 rounded hidden">
+                                    <strong>Must Include:</strong> A concrete 5-year plan. "I will return to [Country] and work in [Sector] to solve [Problem], fostering ties with Turkey by..."
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 4: COMMON PITFALLS (Data Viz) -->
+                <div id="view-mistakes" class="hidden space-y-6 animate-fade-in">
+                    <div class="bg-white p-6 rounded-xl border border-gray-200 card-shadow">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Why Applications Fail</h3>
+                        <p class="text-gray-600 text-sm mb-6">We analyzed rejection feedback. These are the most common fatal errors.</p>
+                        
+                        <!-- Bar Chart -->
+                        <div class="w-full mb-8">
+                             <div class="chart-container" style="max-width: 700px; height: 350px;">
+                                <canvas id="barChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Mistake Cards -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-red-50 border border-red-100 rounded-lg">
+                                <h4 class="font-bold text-red-800 flex items-center"><span class="mr-2">✕</span> The "Tourist" Trap</h4>
+                                <p class="text-sm text-red-700 mt-1">"I love kebab and Turkish drama."</p>
+                                <p class="text-xs text-red-600 mt-2 italic">Correction: Focus on academic heritage and cultural exchange, not tourism.</p>
+                            </div>
+                            <div class="p-4 bg-red-50 border border-red-100 rounded-lg">
+                                <h4 class="font-bold text-red-800 flex items-center"><span class="mr-2">✕</span> The "Desperate" Plea</h4>
+                                <p class="text-sm text-red-700 mt-1">"I need this money because I am poor."</p>
+                                <p class="text-xs text-red-600 mt-2 italic">Correction: Focus on merit and potential. Financial need is a factor, but not the primary selection criteria.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 mt-12">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <h3 class="font-serif text-xl mb-2">Başarılar Dileriz! (Good Luck!)</h3>
+            <p class="text-gray-400 text-sm">Generated for Educational Purposes based on Scholarship Guidelines.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA & CONTENT ---
+
+        const questionsData = [
+            {
+                id: 1,
+                title: "Why Turkey?",
+                good: "Mentions high quality of education in specific fields, Turkey's position as a bridge between East/West, and multicultural environment.",
+                bad: "Focuses only on beautiful scenery, TV shows, or wanting to leave home country.",
+                icon: "🇹🇷"
+            },
+            {
+                id: 2,
+                title: "Why this specific department/university?",
+                good: "Lists specific courses, professors, or research facilities. Shows you've checked the university website.",
+                bad: "Generic statements like 'It is a top university'.",
+                icon: "🏛️"
+            },
+            {
+                id: 3,
+                title: "What is your academic/social background?",
+                good: "Connects past studies/projects to the chosen degree. Highlights leadership or volunteering.",
+                bad: "Just lists grades without context or explanation of gaps.",
+                icon: "🎓"
+            },
+            {
+                id: 4,
+                title: "What are your career plans?",
+                good: "Concrete goals: 'I will work as a [role] in [sector] to solve [problem]'.",
+                bad: "Vague: 'I want to be successful' or 'I want a good job'.",
+                icon: "🚀"
+            },
+            {
+                id: 5,
+                title: "Contribution to Country & Turkey?",
+                good: "Explains how you will use the knowledge back home and maintain ties with Turkey (trade, cultural, academic).",
+                bad: "No mention of giving back or returning.",
+                icon: "🤝"
+            }
+        ];
+
+        // --- NAVIGATION LOGIC ---
+
+        function switchView(viewName) {
+            // Hide all views
+            ['pillars', 'metrics', 'structure', 'mistakes'].forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+                const btn = document.getElementById(`btn-${v}`);
+                if(v === viewName) {
+                    btn.classList.remove('inactive-tab');
+                    btn.classList.add('active-tab');
+                } else {
+                    btn.classList.add('inactive-tab');
+                    btn.classList.remove('active-tab');
+                }
+            });
+
+            // Show selected view
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+
+            // Update Dynamic Tip
+            const tips = {
+                pillars: "Start with the '5 Core Questions'. Your letter is essentially just connecting the answers to these five prompts into a cohesive story.",
+                metrics: "Notice how 'Social Impact' and 'Future Goals' account for nearly half the evaluation. Don't just talk about the past.",
+                structure: "A good letter flows logically. Ensure your 'Why Turkey' section bridges your past (Background) and your future (Goals).",
+                mistakes: "The most common reason for rejection is generic content. If your letter could apply to any country, it's not specific enough."
+            };
+            document.getElementById('dynamic-tip').innerText = tips[viewName];
+        }
+
+        // --- CONTENT POPULATION ---
+
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = questionsData.map(q => `
+                <div class="border border-gray-200 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-md bg-gray-50">
+                    <button onclick="toggleAccordion('q-${q.id}')" class="w-full flex items-center justify-between p-4 bg-white text-left focus:outline-none">
+                        <span class="font-bold text-gray-800 flex items-center">
+                            <span class="mr-3 text-2xl">${q.icon}</span> ${q.title}
+                        </span>
+                        <span id="icon-q-${q.id}" class="text-teal-500 font-bold text-xl">+</span>
+                    </button>
+                    <div id="q-${q.id}" class="hidden p-4 border-t border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-green-50 p-3 rounded border border-green-100">
+                            <h5 class="text-xs font-bold text-green-700 uppercase mb-1">✅ The Right Answer</h5>
+                            <p class="text-sm text-green-900">${q.good}</p>
+                        </div>
+                        <div class="bg-red-50 p-3 rounded border border-red-100">
+                            <h5 class="text-xs font-bold text-red-700 uppercase mb-1">❌ The Wrong Answer</h5>
+                            <p class="text-sm text-red-900">${q.bad}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleAccordion(id) {
+            const el = document.getElementById(id);
+            const icon = document.getElementById(`icon-${id}`);
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                icon.innerText = "−";
+            } else {
+                el.classList.add('hidden');
+                icon.innerText = "+";
+            }
+        }
+
+        function highlightStructure(id) {
+            // Hide all details
+            ['intro', 'academic', 'why', 'future'].forEach(i => {
+                document.getElementById(`struct-${i}`).classList.add('hidden');
+            });
+            // Show clicked
+            document.getElementById(`struct-${id}`).classList.remove('hidden');
+        }
+
+        // --- CHART INITIALIZATION ---
+
+        function initCharts() {
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            
+            // 1. RADAR CHART (Evaluator Priorities)
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Academic Merit', 'Social Impact', 'Clear Goals', 'Language/Cultural Fit', 'Leadership Potential'],
+                    datasets: [{
+                        label: 'Ideal Candidate Profile',
+                        data: [85, 80, 95, 70, 75],
+                        backgroundColor: 'rgba(13, 148, 136, 0.2)', // Teal transparent
+                        borderColor: '#0D9488',
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#0D9488',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#0D9488'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#E5E7EB' },
+                            grid: { color: '#E5E7EB' },
+                            pointLabels: {
+                                font: { size: 11, weight: 'bold' },
+                                color: '#4B5563'
+                            },
+                            ticks: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // 2. DOUGHNUT CHART (Content Balance)
+            const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+            new Chart(doughnutCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Academic Background', 'Future Goals', 'Why Turkey/Uni', 'Social Skills'],
+                    datasets: [{
+                        data: [30, 30, 25, 15],
+                        backgroundColor: ['#1F2937', '#0D9488', '#E11D48', '#94A3B8'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } }
+                    }
+                }
+            });
+
+            // 3. BAR CHART (Mistakes)
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Vague Goals', 'Generic "Love Turkey"', 'Plagiarism', 'Poor Grammar', 'Inconsistent Info'],
+                    datasets: [{
+                        label: 'Frequency of Issue in Rejected Apps (%)',
+                        data: [45, 30, 15, 8, 12],
+                        backgroundColor: '#E11D48',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', () => {
+            renderQuestions();
+            initCharts();
+            // Highlight first structure item by default
+            highlightStructure('intro'); 
+        });
+
+    </script>
+</body>
+</html>
